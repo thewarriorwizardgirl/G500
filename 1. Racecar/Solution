@@ -1,0 +1,77 @@
+class Triplet{
+public:
+    string s;
+    int pos;
+    long speed;
+
+ public:
+    Triplet(string s,int p, long sp){
+        this->s=s;
+        pos=p;
+        speed=sp;
+    }
+
+};
+class Solution {
+public:
+    int racecar(int target) {
+        int curr=0;
+        set<pair<int,long>> s;
+        queue<Triplet> q;
+        q.push(Triplet("",0,1));
+        pair p = make_pair(0,1);
+        s.insert(p);
+        while(!q.empty()){
+            Triplet ct =q.front();
+            cout<<ct.s<<endl;
+            Triplet t=ct;
+            q.pop();
+            // add add
+            t.pos+=t.speed;
+            t.speed *= 2;
+            t.s += "A";
+            pair p1 = make_pair(t.pos, t.speed);
+
+            if(s.find(p1)==s.end() && (abs(target - t.pos)<target)){
+                s.insert(p1);
+                if(t.pos==target){
+                    cout<<t.s.size();
+                    return t.s.size();
+                    
+            }
+                q.push(t);
+            }
+            /*
+            if(t.pos==target){
+                return t.s.size();
+            }
+            q.push(t);
+            */
+
+            //add R
+            if(ct.speed>0){
+                ct.speed = -1;
+            }
+            else{
+                ct.speed=1;
+            }
+            ct.s+="R";
+            pair p2 = make_pair(ct.pos, ct.speed);
+            if(s.find(p2)==s.end() && (abs(target - ct.pos)<target)){
+                s.insert(p2);
+                if(ct.pos==target){
+                cout<<t.s.size();
+                return ct.s.size();
+            }
+                q.push(ct);
+            }
+            /*
+            if(ct.pos==target){
+                return ct.s.size();
+            }
+            q.push(ct);
+            */
+        }
+        return -1;
+    }
+};
