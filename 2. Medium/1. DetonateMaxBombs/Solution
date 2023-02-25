@@ -1,0 +1,172 @@
+class Solution {
+    //just finding connected components by normal DFS
+    void dfs2(int sv, unordered_map<int, vector<int>>& nbrs_in_range, vector<bool> &visited){
+        visited[sv]= true;
+        vector v = nbrs_in_range[sv];
+        int n=v.size();
+        for(int i=0; i<n; i++){
+            if(!visited[v[i]]){
+                dfs2(v[i],nbrs_in_range,visited);
+            }
+        }        
+    }
+
+    //returning the count of nodes in connected component
+    int dfs(int sv, unordered_map<int, vector<int>>& nbrs_in_range, vector<bool>& visited){
+        visited[sv]= true;
+        int c = 0;
+        vector v = nbrs_in_range[sv];
+        int n=v.size();
+        for(int i=0; i<n; i++){
+            if(!visited[v[i]]){
+                c+=dfs(v[i],nbrs_in_range,visited);
+            }
+        }
+        return c+1;
+    }
+
+    int bfs(int sv, unordered_map<int, vector<int>> nbrs_in_range){
+        queue<int> q;
+        unordered_set<int> s;
+        q.push(sv);
+        s.insert(sv);
+        while(!q.empty()){
+            int c=q.front();
+            q.pop();
+            vector v = nbrs_in_range[c];
+            int n=v.size();
+            for(int i=0 ; i<n; i++){
+                if(s.find(v[i])== s.end()){
+                    q.push(v[i]);
+                    s.insert(v[i]);
+                }
+            }
+        }
+        return s.size();
+    }
+public:
+    int maximumDetonation(vector<vector<int>>& bombs) {
+        int n = bombs.size();
+        if (n ==1){
+            return 1;
+        }
+        //sort by increasing order of x values
+        sort(bombs.begin(), bombs.end());
+
+        //adjacency list to store distances from each point to each point
+        unordered_map<int, vector<int>> nbrs_in_range;
+
+        // fill matrix
+        for(int i=0; i<n; i++){
+            for(int j=0; j<n; j++){
+                if(i==j){
+                    continue;
+                }
+                long r = bombs[i][2];
+                long x= bombs[j][0]- bombs[i][0];
+                long y = bombs[j][1]- bombs[i][1];
+                long dsq= (x*x + y*y);
+                
+                if(r*r>=dsq){
+                    nbrs_in_range[i].push_back(j);
+                }
+            }
+        }
+
+/*
+// print map
+        for(int i=0; i<n; i++){
+            cout<<i<<":";
+            vector v = nbrs_in_range[i];
+            int x=v.size();
+            for(int j=0 ; j<x; j++){
+                cout<<v[j]<<" ";
+                }
+            cout<<endl;
+            }
+*/       
+/*
+//BFS
+        int mx_bombs=1;
+        for(int i=0; i<n; i++){
+            int curr= bfs(i, nbrs_in_range);
+            if(curr>mx_bombs){
+                mx_bombs=curr;
+            }
+        }
+*/
+
+//dfs
+        int mx_bombs=1;
+        for(int i=0; i<n; i++){
+            vector<bool> visited(n, false); 
+            /*
+            dfs2(i, nbrs_in_range, visited);
+            int cnt=0;
+            for(int i=0; i<n; i++){
+                if(visited[i]){
+                    cnt+=1;
+                }
+            }*/
+            int cnt=dfs(i, nbrs_in_range, visited);
+            //cout<<cnt<<endl;
+            if(cnt>mx_bombs){
+                mx_bombs=cnt;
+            }
+        }        
+    return mx_bombs;
+    }
+};
+
+/*
+class Solution {
+public:
+    int maximumDetonation(vector<vector<int>>& bombs) {
+        int n = bombs.size();
+        if (n ==1){
+            return 1;
+        }
+        //2d matrix to store distances from each point to each point
+        vector<vector<float>> distances (n, vector<float>(n,0));
+        int mx_bombs = 1;
+
+        // fill matrix
+        //sort by increasing order of x values
+        sort(bombs.begin(), bombs.end());
+        for(int i=0; i<n; i++){
+            for(int j=i+1; j<n; j++){
+                long x= bombs[j][0]- bombs[i][0];
+                long y = bombs[j][1]- bombs[i][1];
+                long sq= (x*x + y*y);
+                long d = sqrt(sq);
+                distances[i][j]=distances[j][i]=d;
+            }
+        }
+        //finding ranges for each bomb
+
+        for(int i=0; i<n; i++){
+            int c=1;
+            for(int j=i; j<n;){
+                for(int k=j+1; k<n; k++){
+                    long rad = bombs[j][2];
+                    if(rad >= distances[j][k]){
+                        c+=1;
+                    }
+                    else{
+                        j=k-1;
+                        break;
+                    }
+                }
+                if(j==0){
+                    break;
+                }
+            }
+            if(c>mx_bombs){
+                cout<<c<<endl;
+                mx_bombs=c;
+        }
+    }
+    return mx_bombs;
+    }
+};
+*/
