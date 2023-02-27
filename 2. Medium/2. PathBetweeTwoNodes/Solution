@@ -1,0 +1,117 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+    bool rootToNode(TreeNode* node, int destVal, string& st){
+        if(node == nullptr){
+            return false;
+        }
+        if(node->val == destVal){
+            return true;
+        }
+        st.push_back('L');
+        bool leftAns= rootToNode(node->left, destVal, st);
+        if(leftAns){
+            return true;
+        }
+        else{
+            st.pop_back();
+            st.push_back('R');
+            bool rightAns = rootToNode(node->right, destVal, st);
+            if(rightAns){
+                return true;
+            }
+        }
+        st.pop_back();
+        return false;
+    }
+public:
+    string getDirections(TreeNode* root, int startValue, int destValue) {
+        string s1;
+        string s2;
+        bool output1 = rootToNode(root, startValue, s1);
+        bool output2 = rootToNode(root, destValue, s2);
+       
+        string ans;
+        
+        int sz1=s1.size();
+        int sz2=s2.size();
+        
+        int i=0;
+        for(; i<sz1 && i<sz2; i++){
+            if(s1[i]!=s2[i]){
+                break;
+            }
+        }
+        for(int k=sz1-i; k>0; k--){
+            ans.push_back('U');
+        }
+        for(int k=i; k<sz2; k++){
+            ans.push_back(s2[k]) ;
+        }
+        return ans;
+    }    
+};
+
+/*
+class Solution {
+    bool rootToNode(TreeNode* node, int destVal, deque<char>& st){
+        if(node == nullptr){
+            return false;
+        }
+        if(node->val == destVal){
+            return true;
+        }
+        st.push_back('L');
+        bool leftAns= rootToNode(node->left, destVal, st);
+        if(leftAns){
+            return true;
+        }
+        else{
+            st.pop_back();
+            st.push_back('R');
+            bool rightAns = rootToNode(node->right, destVal, st);
+            if(rightAns){
+                return true;
+            }
+        }
+        st.pop_back();
+        return false;
+    }
+public:
+    string getDirections(TreeNode* root, int startValue, int destValue) {
+        deque<char> s1;
+        deque<char> s2;
+        bool output1 = rootToNode(root, startValue, s1);
+        bool output2 = rootToNode(root, destValue, s2);
+       
+        string ans;
+        
+        int sz1=s1.size();
+        int sz2=s2.size();
+        
+        int i=0;
+        for(; i<sz1 && i<sz2; i++){
+            if(s1[i]!=s2[i]){
+                break;
+            }
+        }
+        for(int k=sz1-i; k>0; k--){
+            ans= ans + 'U';
+        }
+        for(int k=i; k<sz2; k++){
+            ans =  ans + s2[k] ;
+        }
+        return ans;
+
+    }    
+};
+*/

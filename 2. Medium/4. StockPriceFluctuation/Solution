@@ -1,0 +1,153 @@
+class StockPrice {
+    unordered_map <int,int> mp;
+    map<int, int> priceFrequency; // price,frequency
+    int latest_time;
+public:
+    StockPrice() {
+        this->latest_time=0;       
+    }
+    
+    void update(int timestamp, int price) {
+        latest_time = max(latest_time, timestamp);
+        //update        
+            if(mp.find(timestamp)!=mp.end()){
+                int oldPrice = mp[timestamp];
+                priceFrequency[oldPrice]-=1;
+                if(priceFrequency[oldPrice]==0){
+                    priceFrequency.erase(oldPrice);
+                } 
+                mp[timestamp]=price;               
+                priceFrequency[price]+=1;
+                
+            }
+            else{
+                mp[timestamp]=price;
+                priceFrequency[price]+=1;
+            }
+        }
+    
+    int current() {
+        return mp[latest_time];
+    }
+    
+    int maximum() {
+        return priceFrequency.rbegin()->first;
+    }
+    
+    int minimum() {
+       return priceFrequency.begin()->first; 
+    }
+};
+
+// this solution gives TLE
+/*
+class StockPrice {
+    unordered_map <int,int> mp;
+    map<int, int> priceFrequency; // price
+    int mx;
+    int mn;
+    int latest_time;
+public:
+    StockPrice() {
+        this->mx=0;
+        this->mn=INT_MAX;
+        this->latest_time=0;       
+    }
+    
+    void update(int timestamp, int price) {
+        mp[timestamp]=price;
+        latest_time=max(latest_time, timestamp);
+        //update minimum
+        
+        mn=INT_MAX;
+        for(auto it=mp.begin(); it!=mp.end(); it++){
+            if(it->second<mn){
+                mn=it->second;
+            }
+        }
+
+        //update max
+        mx=0;
+        for(auto it=mp.begin(); it!=mp.end(); it++){
+            if(it->second>mx){
+                mx=it->second;
+            }
+        }
+    }
+    
+    int current() {
+        return mp[latest_time];
+    }
+    
+    int maximum() {
+        return mx;
+    }
+    
+    int minimum() {
+       return mn; 
+    }
+};
+*/
+/*
+class StockPrice {
+    vector<pair<int,int>> v;
+    set<int> s;
+    int mx;
+    int mn;
+    int curr;
+public:
+    StockPrice() {
+        this->mx=0;
+        this->mn=INT_MAX;
+        this->curr=0;       
+    }
+    
+    void update(int timestamp, int price) {
+        int s=v.size();
+        if(this->s.find(timestamp)==this->s.end()){
+            pair p = make_pair(timestamp, price);
+            
+            s.insert(timestamp);
+            v.push_back(p);
+            this->curr=s;
+        }
+        else{
+            int i=0;
+            
+            for(; i<s; i++){
+                if(v[i].first==timestamp){
+                    v[i].second=price;
+                }
+            }
+            this->curr = i;
+        }
+       if(price>this->mx){
+           mx=price;
+       } 
+       if(price<this->mn){
+           mn=price;
+       }
+    }
+    
+    int current() {
+        return v[curr].second;
+    }
+    
+    int maximum() {
+        return this->mn;
+    }
+    
+    int minimum() {
+       return this->mn; 
+    }
+};
+*/
+
+/**
+ * Your StockPrice object will be instantiated and called as such:
+ * StockPrice* obj = new StockPrice();
+ * obj->update(timestamp,price);
+ * int param_2 = obj->current();
+ * int param_3 = obj->maximum();
+ * int param_4 = obj->minimum();
+ */
