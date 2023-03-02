@@ -1,0 +1,44 @@
+class Solution {
+public:
+   // O(n)
+   // (a[i]+i) + (a[j]-j)
+   //we need to see at j what is the best i so far
+    int maxScoreSightseeingPair(vector<int>& values) {
+        int best_i_so_far = values[0];
+        int mx=0;
+        int n = values.size();
+        for (int j=1; j<n; j++){
+            int jval = values[j]-j;
+            int curr= best_i_so_far+jval;
+            if(curr>mx){
+                mx=curr;
+            }
+            int ival = values[j]+j;
+            if(ival>best_i_so_far){
+                best_i_so_far = ival;
+            }
+        }
+        return mx;
+    }
+};
+
+//video link - https://www.youtube.com/watch?v=lk7WUhAwYGA
+/*
+class Solution {
+public:
+    int maxScoreSightseeingPair(vector<int>& values) {
+        // brute force n^2
+        int mx=0;
+        int n = values.size();
+        for (int i=0; i<n; i++){
+            for(int j=i+1; j<n; j++){
+                int curr = values[i]+values[j]+i-j;
+                if(curr>mx){
+                    mx=curr;
+                }
+            }
+        }
+        return mx;
+    }
+};
+*/
