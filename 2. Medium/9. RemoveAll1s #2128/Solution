@@ -1,0 +1,26 @@
+class Solution {
+public:
+    bool removeOnes(vector<vector<int>>& grid) {
+        int r = grid.size();
+        int c = grid[0].size();
+
+        for(int i = 0; i<r ; i++){
+            if(grid[i][0]==1){
+                for(int j=0; j<c; j++){
+                    grid[i][j]^=1;
+                }
+            }
+        }
+        
+        for (int j=0; j<c; j++){
+            int colsum=0;
+            for(int i=0; i<r; i++){
+                colsum+=grid[i][j];
+            }
+            if(colsum > 0 && colsum < r){
+                return false;
+            }
+        }
+        return true;
+    }
+};

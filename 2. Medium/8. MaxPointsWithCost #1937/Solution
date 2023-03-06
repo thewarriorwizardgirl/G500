@@ -1,0 +1,66 @@
+class Solution {
+public:
+    long long maxPoints(vector<vector<int>>& points) {
+        int n = points.size();
+        int m = points[0].size();
+        vector<vector<long long>> dp(n, vector<long long>(m));
+
+        //first row same
+        for(int j=0; j<m; j++){
+            dp[0][j]= points[0][j];
+        }
+
+        //O(N^2)
+        for(int i=1; i<n; i++){
+        vector<long long> leftMax(m,0);
+        leftMax[0]=dp[i-1][0];
+          
+        for(int k=1; k<m; k++){
+            leftMax[k]= max(leftMax[k-1], dp[i-1][k]+k);
+        }
+
+        vector<long long> rightMax(m,0);
+        rightMax[m-1]=dp[i-1][m-1]-(m-1);
+          
+        for(int k=m-2; k>=0; k--){
+            rightMax[k]= max(rightMax[k+1], dp[i-1][k]-k);
+        }
+
+        for(int j=0; j<m; j++){
+            dp[i][j]= points[i][j]+ max(leftMax[j]-j, rightMax[j]+j);
+        }   
+        }        
+
+
+        // O(N^3)
+        /*
+        for(int i=1; i<n; i++){
+            for(int j=0; j<m; j++){
+                int mx=0;
+                int c=0;
+                for(int k=0; k<m; k++){
+                    if(k<j){
+                        c = points[i][j]+ dp[i-1][k]- j+k;
+                    }
+                    else{
+                        c = points[i][j]+ dp[i-1][k]- k+j;
+                    }
+                    if(c>mx){
+                        mx=c;
+                    }                    
+                }
+                dp[i][j]=mx;
+            }
+        }
+        */
+
+       long long ans=0; 
+       for(int j=0; j<m; j++) {
+          // cout<<dp[n-1][j]<<" ";
+           if(dp[n-1][j]>ans){
+               ans=dp[n-1][j];
+           }
+       }
+       return ans;
+    }
+};
